@@ -1,6 +1,5 @@
 import os
 from convenience_functions import preprocess, NE_expansion,NE_extraction,NE_tuples,relation_features,gen_lexical_features
-
 class distant_supervisor:
     def __init__(self):
         self.text=[]
@@ -16,8 +15,13 @@ class distant_supervisor:
         for doc in self.files:
             file_=open(doc,"r")
             self.text+=preprocess(file_.read())
-    def vectorize_corpus(self,window=1,stem_and_lem=True,only_relations=False):
+    def vectorize_corpus(self,window=1,stem_and_lem=True,only_relations=False,autolabel=False,example_file=None):
+        if example_file is not None:
+            with open(example_file,'Ur') as file_:
+                examples=list(sorted(list(exemplar) for exemplar in csv.reader(file_,delimiter=',')))
+        
         all_docs=[]
+            
         if not only_relations:
             for sentence in self.text:
                 all_docs=all_docs+gen_lexical_features(sentence,k=window,stem_and_lem=stem_and_lem)
@@ -26,8 +30,14 @@ class distant_supervisor:
                 named_ents=NE_extraction(sentence)
                 named_ents=NE_tuples(named_ents)
                 for pair in named_ents:
-                    if len(pair)==2:
-                        r_f=[relation_features(sentence,pair,k=window,stem_and_lem=stem_and_lem)]
-                        all_docs=all_docs+r_f
-        
+                    r_f=[relation_features(sentence,pair,k=window,stem_and_lem=stem_and_lem)]
+                    if autolabel is True:
+                        if r_f[0]['relation'] in examples:
+                            r_f[0]['is_relation']=1
+                        else:
+                            r_f[0]['is_relation']=0
+                    all_docs=all_docs+r_f
+    
         return(all_docs)
+    
+

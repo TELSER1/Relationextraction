@@ -120,6 +120,8 @@ def NE_tuples(relations):
     return(combinations(relations,r=2))
         
 def relation_features(sentence,pair,k=1,stem_and_lem=True):
+    '''k specifies relevant window around a word for pos tags and words to be extracted, stem_and_lem designates 
+    whether or not the extracted words are stemmed and lemmatized'''
     features={}
     s_len=len(sentence)
     pos_sequence=[]
