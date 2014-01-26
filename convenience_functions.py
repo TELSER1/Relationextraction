@@ -15,7 +15,6 @@ def gen_lexical_features(sentence,k=1,stem_and_lem=True):
     '''This function computes lexical features on a word by word basis for future processing.  <k> specifies the window around a token to extract part of speech tags
     and words from; stemming and lemmatizing options exist for the word token'''
     featurelist=[]
-    f
     s_len=len(sentence)
     stemmer=nltk.stem.porter.PorterStemmer()
     lemmatizer=nltk.stem.wordnet.WordNetLemmatizer()
@@ -25,6 +24,7 @@ def gen_lexical_features(sentence,k=1,stem_and_lem=True):
         if not isinstance(sentence[ix],nltk.tree.Tree):
             features['word']=sentence[ix][0]
         else:
+            word=[]
             for tup in sentence[ix][0]:
                 word.append(tup[0])
             features['word']=" ".join(word)
@@ -78,8 +78,8 @@ def gen_lexical_features(sentence,k=1,stem_and_lem=True):
                         features['word'+'r'+str(distance)]=stemmer.stem(lemmatizer.lemmatize(" ".join(word)))
         
         featurelist.append(features)
-    features['pair']    
-    return(featurelist)
+     
+    return([featurelist])
 
 
 #determine if pair is found in sentence, only record those sentences(label propagation)
